@@ -4,26 +4,41 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Capital Dawah</title>
-  <link href="https://fonts.cdnfonts.com/css/prohibition" rel="stylesheet" />
+
   <style>
-    body {
+    /* === Embed Prohibition Font === */
+    @font-face {
+      font-family: 'Prohibition';
+      src: url('/prohibition.woff2') format('woff2'),
+           url('/prohibition.woff') format('woff'),
+           url('/prohibition.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* === General Layout === */
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
       background-color: #000;
       color: #fff;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      margin: 0;
-      font-family: 'Prohibition', sans-serif;
-      font-size: 2.4rem;
       text-align: center;
+      font-family: 'Prohibition', Arial, sans-serif;
+      font-size: 2rem; /* slightly smaller */
       transition: transform 0.3s ease, color 0.3s ease;
     }
 
+    /* === Email Styling === */
     .email {
       cursor: pointer;
       display: inline-block;
       transition: transform 0.3s ease, color 0.3s ease;
+      user-select: none;
     }
 
     .email:hover {
@@ -37,6 +52,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="email" id="email">
     👉🏻📩 Contact@CapitalDawah.COM 📩👈🏻
@@ -46,15 +62,19 @@
     const email = document.getElementById('email');
     email.addEventListener('click', async () => {
       const text = 'Contact@CapitalDawah.COM';
-      if (navigator.clipboard) {
-        await navigator.clipboard.writeText(text);
-        email.classList.add('copied');
-        email.textContent = '📋 Copied to Clipboard!';
-        setTimeout(() => {
-          email.textContent = '👉🏻📩 Contact@CapitalDawah.COM 📩👈🏻';
-          email.classList.remove('copied');
-        }, 2000);
-      } else {
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+          email.classList.add('copied');
+          email.textContent = '📋 Copied to Clipboard!';
+          setTimeout(() => {
+            email.textContent = '👉🏻📩 Contact@CapitalDawah.COM 📩👈🏻';
+            email.classList.remove('copied');
+          }, 2000);
+        } else {
+          window.location.href = 'mailto:' + text;
+        }
+      } catch (err) {
         window.location.href = 'mailto:' + text;
       }
     });
