@@ -35,4 +35,109 @@
       padding: 0;
       background: var(--bg);
       color: var(--fg);
-      font-family: "Prohibition", system-ui, -apple
+      font-family: "Prohibition", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Centering container */
+    .wrap {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      box-sizing: border-box;
+    }
+
+    /* Email button / element */
+    .email {
+      display: inline-block;
+      cursor: pointer;
+      user-select: none;
+      padding: 0.6rem 1rem;
+      border-radius: 10px;
+      transition: transform 180ms ease, color 180ms ease, background 180ms ease;
+      line-height: 1.1;
+      /* font-size uses the responsive base and scales slightly for emphasis */
+      font-size: calc(var(--base) * 1.6);
+      letter-spacing: 0.6px;
+    }
+
+    /* Make the email smaller on very small screens so it fits in one frame */
+    @media (max-width: 420px) {
+      .email { font-size: calc(var(--base) * 1.25); padding: 0.5rem .8rem; }
+    }
+
+    .email:hover { transform: scale(1.03); color: var(--accent); }
+
+    /* Small text under the email */
+    .hint {
+      margin-top: 0.6rem;
+      font-size: calc(var(--base) * 0.95);
+      opacity: 0.85;
+    }
+
+    .copied {
+      color: var(--copied);
+    }
+
+    /* Make sure long email breaks nicely */
+    .email, .hint { word-break: break-word; }
+
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div>
+      <div class="email" id="email" role="button" aria-label="Copy our email address">
+        👉🏻📩 contact@capitaldawah.com 📩👈🏻
+      </div>
+      <div class="hint" id="hint">Tap To Copy • Or Click To Open Email App</div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const emailEl = document.getElementById('email');
+      const hintEl = document.getElementById('hint');
+      const address = 'contact@capitaldawah.com';
+
+      async function copiedState() {
+        emailEl.classList.add('copied');
+        emailEl.textContent = '📋 Copied To Clipboard!';
+        hintEl.textContent = 'Email Copied — Open Your Mail App To Send';
+        setTimeout(() => {
+          emailEl.classList.remove('copied');
+          emailEl.textContent = '👉🏻📩 contact@capitaldawah.com 📩👈🏻';
+          hintEl.textContent = 'Tap To Copy • Or Click To Open Email App';
+        }, 1800);
+      }
+
+      emailEl.addEventListener('click', async (e) => {
+        // Use clipboard when available and on secure context (HTTPS or localhost)
+        if (navigator.clipboard && window.isSecureContext) {
+          try {
+            await navigator.clipboard.writeText(address);
+            copiedState();
+            return;
+          } catch(err) {
+            // fall through to mailto fallback
+          }
+        }
+        // Fallback: open default mail client
+        window.location.href = 'mailto:' + address;
+      });
+
+      // keyboard accessibility
+      emailEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          emailEl.click();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
