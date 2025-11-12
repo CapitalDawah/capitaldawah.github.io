@@ -6,12 +6,9 @@
   <title>Capital Dawah</title>
 
   <style>
-    /* === Use fonts directly from /fonts/ folder === */
     @font-face {
       font-family: "Prohibition";
-      src: url("/fonts/prohibition.woff2") format("woff2"),
-           url("/fonts/prohibition.woff") format("woff"),
-           url("/fonts/prohibition.ttf") format("truetype");
+      src: url("https://capitaldawah.github.io/fonts/prohibition.woff2") format("woff2");
       font-weight: 400;
       font-style: normal;
       font-display: swap;
@@ -25,9 +22,13 @@
       --fg: #fff;
     }
 
+    * {
+      margin: 0;
+      box-sizing: border-box;
+    }
+
     html, body {
       height: 100%;
-      margin: 0;
       background: var(--bg);
       color: var(--fg);
       font-family: "Prohibition", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -36,25 +37,23 @@
     }
 
     .wrap {
-      min-height: 100vh;
       display: flex;
-      align-items: center;
+      height: 100vh;
       justify-content: center;
+      align-items: center;
       text-align: center;
       padding: 2rem;
-      box-sizing: border-box;
     }
 
     .email {
-      display: inline-block;
       cursor: pointer;
       user-select: none;
       padding: 0.6rem 1rem;
       border-radius: 10px;
       transition: transform 180ms ease, color 180ms ease;
-      line-height: 1.1;
       font-size: calc(var(--base) * 1.6);
       letter-spacing: 0.6px;
+      line-height: 1.1;
     }
 
     @media (max-width: 420px) {
@@ -64,55 +63,44 @@
       }
     }
 
-    .email:hover {
-      transform: scale(1.03);
-      color: var(--accent);
-    }
-
-    .copied {
-      color: var(--copied);
-    }
+    .email:hover { transform: scale(1.03); color: var(--accent); }
+    .copied { color: var(--copied); }
   </style>
 </head>
+
 <body>
   <div class="wrap">
-    <div class="email" id="email" role="button" aria-label="Copy our email address">
-      👉🏻📩 contact@capitaldawah.com 📩👈🏻
-    </div>
+    <div class="email" id="email" tabindex="0">👉🏻📩 contact@capitaldawah.com 📩👈🏻</div>
   </div>
 
   <script>
-    (function() {
-      const emailEl = document.getElementById('email');
-      const address = 'contact@capitaldawah.com';
+    const emailEl = document.getElementById('email');
+    const address = 'contact@capitaldawah.com';
 
-      async function copiedState() {
-        emailEl.classList.add('copied');
-        emailEl.textContent = '📋 Copied To Clipboard!';
-        setTimeout(() => {
-          emailEl.classList.remove('copied');
-          emailEl.textContent = '👉🏻📩 contact@capitaldawah.com 📩👈🏻';
-        }, 1800);
-      }
+    function copiedState() {
+      emailEl.classList.add('copied');
+      emailEl.textContent = '📋 Copied To Clipboard!';
+      setTimeout(() => {
+        emailEl.classList.remove('copied');
+        emailEl.textContent = '👉🏻📩 contact@capitaldawah.com 📩👈🏻';
+      }, 1800);
+    }
 
-      emailEl.addEventListener('click', async () => {
-        if (navigator.clipboard && window.isSecureContext) {
-          try {
-            await navigator.clipboard.writeText(address);
-            copiedState();
-            return;
-          } catch {}
-        }
+    emailEl.onclick = async () => {
+      try {
+        await navigator.clipboard.writeText(address);
+        copiedState();
+      } catch {
         window.location.href = 'mailto:' + address;
-      });
+      }
+    };
 
-      emailEl.addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          emailEl.click();
-        }
-      });
-    })();
+    emailEl.onkeydown = e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        emailEl.click();
+      }
+    };
   </script>
 </body>
 </html>
